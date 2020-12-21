@@ -215,7 +215,12 @@ module OneLogin
         return nil if private_key.nil? || private_key.empty?
 
         formatted_private_key = OneLogin::RubySaml::Utils.format_private_key(private_key)
-        OpenSSL::PKey::RSA.new(formatted_private_key)
+
+        if formatted_private_key.include? "BEGIN EC PRIVATE KEY"
+          OpenSSL::PKey::EC.new(formatted_private_key)
+        else
+          OpenSSL::PKey::RSA.new(formatted_private_key)
+        end
       end
 
       private
