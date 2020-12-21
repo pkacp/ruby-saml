@@ -67,15 +67,20 @@ module OneLogin
         # don't try to format an encoded private key or if is empty
         return key if key.nil? || key.empty? || key.match(/\x0d/)
 
-        # is this an rsa key?
         rsa_key = key.match("RSA PRIVATE KEY")
+        ec_key = key.match("EC PRIVATE KEY")
         key = key.gsub(/\-{5}\s?(BEGIN|END)( RSA)? PRIVATE KEY\s?\-{5}/, "")
         key = key.gsub(/\n/, "")
         key = key.gsub(/\r/, "")
         key = key.gsub(/\s/, "")
         key = key.scan(/.{1,64}/)
         key = key.join("\n")
-        key_label = rsa_key ? "RSA PRIVATE KEY" : "PRIVATE KEY"
+        key_label = "PRIVATE KEY"
+        if rsa_key
+          key_label = "RSA PRIVATE KEY"
+        elsif ec_key
+          key_label = "EC PRIVATE KEY"
+        end
         "-----BEGIN #{key_label}-----\n#{key}\n-----END #{key_label}-----"
       end
 
