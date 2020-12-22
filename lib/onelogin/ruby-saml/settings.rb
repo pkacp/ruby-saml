@@ -13,8 +13,12 @@ module OneLogin
       def initialize(overrides = {}, keep_security_attributes = false)
         if keep_security_attributes
           security_attributes = overrides.delete(:security) || {}
+          additional_headers_attributes = overrides.delete(:additional_headers) || {}
+          extensions_attributes = overrides.delete(:extensions) || {}
           config = DEFAULTS.merge(overrides)
           config[:security] = DEFAULTS[:security].merge(security_attributes)
+          config[:additional_headers] = DEFAULTS[:additional_headers].merge(additional_headers_attributes)
+          config[:extensions] = DEFAULTS[:extensions].merge(extensions_attributes)
         else
           config = DEFAULTS.merge(overrides)
         end
@@ -69,6 +73,9 @@ module OneLogin
       attr_accessor :assertion_consumer_logout_service_url
       attr_accessor :assertion_consumer_logout_service_binding
       attr_accessor :issuer
+      # Additional data
+      attr_accessor :additional_headers
+      attr_accessor :extensions
 
       # @return [String] SP Entity ID
       #
@@ -233,6 +240,8 @@ module OneLogin
         :compress_response                         => true,
         :soft                                      => true,
         :double_quote_xml_attribute_values         => false,
+        :additional_headers                        => {},
+        :extensions                                => {},
         :security                                  => {
           :authn_requests_signed      => false,
           :logout_requests_signed     => false,

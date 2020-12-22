@@ -115,6 +115,11 @@ module OneLogin
         root.attributes['ForceAuthn'] = settings.force_authn unless settings.force_authn.nil?
 
         # Conditionally defined elements based on settings
+        if settings.additional_headers.any?
+          settings.additional_headers.each do |key, value|
+            root.attributes[key] = value
+          end
+        end
         if settings.assertion_consumer_service_url != nil
           root.attributes["AssertionConsumerServiceURL"] = settings.assertion_consumer_service_url
         end
@@ -132,6 +137,23 @@ module OneLogin
 
           subject_confirmation = subject.add_element "saml:SubjectConfirmation"
           subject_confirmation.attributes['Method'] = "urn:oasis:names:tc:SAML:2.0:cm:bearer"
+        end
+
+        if settings.extensions.any?
+          extensions = root.add_element "samlp:Extensions"
+          if settings.extensions[:eidas]
+            sptype = extensions.add_element "eidas:SPType"
+            sptype.text = "public"
+            req_attributes = extensions.add_element "eidas:RequestedAttributes"
+            settings.extensions[:eidas].each do |eidas_attribute|
+              req_attributes.add_element "eidas:RequestedAttribute", {
+                  "FriendlyName" => eidas_attribute[:friendly_name],
+                  "Name" => eidas_attribute[:name],
+                  "NameFormat" => eidas_attribute[:name_format],
+                  "isRequired" => "true",
+              }
+            end
+          end
         end
 
         if settings.name_identifier_format != nil
