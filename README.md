@@ -1,4 +1,5 @@
-# Ruby SAML [![Build Status](https://secure.travis-ci.org/onelogin/ruby-saml.svg)](http://travis-ci.org/onelogin/ruby-saml) [![Coverage Status](https://coveralls.io/repos/onelogin/ruby-saml/badge.svg?branch=master)](https://coveralls.io/r/onelogin/ruby-saml?branch=master) [![Gem Version](https://badge.fury.io/rb/ruby-saml.svg)](http://badge.fury.io/rb/ruby-saml)
+# FORK OF Ruby SAML
+# Original https://github.com/onelogin/ruby-saml
 
 ## Updating from 1.10.x to 1.11.0
 Version `1.11.0` deprecates the use of `settings.issuer` in favour of `settings.sp_entity_id`.
